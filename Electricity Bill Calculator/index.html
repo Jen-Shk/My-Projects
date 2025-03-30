@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Bill Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="electricity-bill">
+        <h2>Electricity Bill Calculator</h2>
+        <form id="electricityForm">
+            <div class="form-group">
+                <label for="mcb-Amphere">Enter the MCB Amphere</label>
+                    <div>
+                        <select name="mcbAmphere" id="mcb-Amphere">
+                            <option value="5" selected>5</option>
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="60">60</option>
+                        </select>
+                    </div>
+            </div>
+
+            <div class="form-group">
+                <label for="meterReading">Current Meter Reading:</label>
+                <input type="number" id="meterReading" name="meterReading" required>
+                <span id="meterReadingError" class="error"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="previousReading">Previous Meter Reading:</label>
+                <input type="number" id="previousReading" name="previousReading" required>
+                <span id="previousReadingError" class="error"></span>
+            </div>
+
+            <button type="submit">Calculate Bill</button>
+        </form>
+        
+        <div class="result">
+            <div id="totalUnit"></div>
+            <div id="totalAmount"></div>
+        </div>
+    </div>
+    
+    <script src="calculate.js"></script>
+</body>
+</html>
