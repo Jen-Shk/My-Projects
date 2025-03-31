@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const totalBill = calculateTotalBill(mcbAmphere, consumption);
 
         // Display total amount
-        totalUnit.textContent = `Total Unit consumed: ${consumption} KWh`;
+        totalUnit.textContent = `Total Unit consumed: ${consumption.toLocaleString("en-IN")} KWh`;
         totalAmount.textContent = `Total Amount in NPR is: Rs ${totalBill.toLocaleString("en-IN")}`;
 
         // Stop calculating effect after displaying the result
