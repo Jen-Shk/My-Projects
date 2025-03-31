@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Display total amount
         totalUnit.textContent = `Total Unit consumed: ${consumption} KWh`;
-        totalAmount.textContent = `Total Amount in NPR is: Rs ${totalBill}`;
+        totalAmount.textContent = `Total Amount in NPR is: Rs ${totalBill.toLocaleString("en-IN")}`;
 
         // Stop calculating effect after displaying the result
         stopCalculatingEffect();
