@@ -1,16 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
     const electricityForm = document.querySelector("#electricityForm");
+    const calculationMethodInput = document.querySelector("#calculationMethod");
+    const meterReadingInputs = document.querySelector("#meterReadingInputs");
+    const directValueInputs = document.querySelector("#directValueInputs");
     const mcbAmphereInput = document.querySelector("#mcb-Amphere");
+    const mcbAmphereInput2 = document.querySelector("#mcb-AmphereDirect");
     const meterReadingInput = document.querySelector("#meterReading");
     const previousReadingInput = document.querySelector("#previousReading");
+    const directValueInput = document.querySelector("#directValue");
     const meterReadingError = document.querySelector("#meterReadingError");
     const previousReadingError = document.querySelector("#previousReadingError");
-    const totalUnit = document.querySelector("#totalUnit"); // Assuming you have an element to display total units
-    const totalAmount = document.querySelector("#totalAmount"); // Assuming you have an element to display total amount
-
+    const directValueError = document.querySelector("#directValueError");
+    const totalUnit = document.querySelector("#totalUnit");
+    const totalAmount = document.querySelector("#totalAmount");
+    
     let calculatingInterval;
     let isCalculating = false;
+
+    calculationMethodInput.addEventListener("change", function() {
+        const selectedMethod = this.value;
+        if (selectedMethod === "meterReading") {
+            meterReadingInputs.style.display = "block";
+            directValueInputs.style.display = "none";
+        } else if (selectedMethod === "directValue") {
+            meterReadingInputs.style.display = "none";
+            directValueInputs.style.display = "block";
+        }
+    });
 
     function showCalculatingEffect() {
         if (isCalculating) return;
@@ -36,55 +52,95 @@ document.addEventListener("DOMContentLoaded", () => {
         totalUnit.textContent = "";
         totalAmount.textContent = "";
 
-        // Get values from input fields
-        const mcbAmphere = mcbAmphereInput.value;
-        const meterReading = meterReadingInput.value.trim();
-        const previousReading = previousReadingInput.value.trim();
+        const selectedMethod = calculationMethodInput.value;
+        let mcbAmphere;
+            if (selectedMethod === "meterReading") {
+                mcbAmphere = mcbAmphereInput.value;
+            } else if (selectedMethod === "directValue") {
+                mcbAmphere = mcbAmphereInput2.value;
+            }
+
+        let consumption;
 
         // Reset error messages
         meterReadingError.textContent = "";
         previousReadingError.textContent = "";
+        directValueError.textContent = "";
+
+        if (selectedMethod === "meterReading") {
+            consumption = calculateMeterReading();
+        } else if (selectedMethod === "directValue") {
+            consumption = calculateDirectValue();
+
+            if(consumption === null) {
+                totalUnit.textContent = "Waiting for input...";
+                totalAmount.textContent = "";
+                return;
+            }
+        }
+
+        if (consumption === null) return; // If there's an error in calculation, exit early
+
+        // Show calculating effect
+        showCalculatingEffect();
+
+        setTimeout(() => {
+            processCalculation(mcbAmphere, consumption);
+        }, 300);
+    }
+
+    function calculateMeterReading() {
+        const meterReading = meterReadingInput.value.trim();
+        const previousReading = previousReadingInput.value.trim();
 
         // Validate inputs
         if (meterReading === "") {
             meterReadingError.textContent = "Please enter your meter reading";
             totalUnit.textContent = "Waiting for input...";
-            return;
+            return null;
         } else if (/[^0-9]/.test(meterReading)) {
             meterReadingError.textContent = "Enter only numbers for meter reading";
             totalUnit.textContent = "Waiting for input...";
-            return;
+            return null;
         }
-    
+
         // Validate previous reading
         if (previousReading === "") {
             previousReadingError.textContent = "Please enter your previous reading";
             totalUnit.textContent = "Waiting for input...";
-            return;
+            return null;
         } else if (/[^0-9]/.test(previousReading)) {
             previousReadingError.textContent = "Enter only numbers for previous reading";
             totalUnit.textContent = "Waiting for input...";
-            return;
+            return null;
         }
-                
-        // Show calculating effect
-        showCalculatingEffect();
 
-        setTimeout(() => {
-            processCalculation(mcbAmphere, meterReading, previousReading);
-        }, 300);
-    }
-
-    function processCalculation(mcbAmphere, meterReading, previousReading) {
         const consumption = parseInt(meterReading) - parseInt(previousReading);
         if (isNaN(consumption) || consumption < 0) {
             previousReadingError.textContent = "Previous reading must be less than meter reading";
-            stopCalculatingEffect();
-            totalUnit.textContent = "Error in input!";
-            totalAmount.textContent = ""; // Clear total amount
-            return;
+            return null;
         }
 
+        return consumption;
+    }
+
+    function calculateDirectValue() {
+        const directValue = directValueInput.value.trim();
+        if (directValue === "") {
+            directValueError.textContent = "Please enter the value";
+            totalUnit.textContent = "";
+            totalAmount.textContent = "";
+            return null;
+        } else if (/[^0-9]/.test(directValue)) {
+            directValueError.textContent = "Enter only numbers for direct value";
+            totalUnit.textContent = "";
+            totalAmount.textContent = "";
+            return null;
+        }
+        return parseInt(directValue);
+    }
+
+    function processCalculation(mcbAmphere, consumption) {
         // Calculate total amount
         const totalBill = calculateTotalBill(mcbAmphere, consumption);
 
@@ -104,10 +160,25 @@ document.addEventListener("DOMContentLoaded", () => {
     previousReadingInput.addEventListener("input", () => {
         calculateAndDisplayBill();
     });
+    directValueInput.addEventListener("input", () => {
+        setTimeout(() => calculateAndDisplayBill(), 300);
+    });
 
     // Allow submit button to calculate
-    electricityForm.addEventListener("submit", function(event) {
+    const calculateButton = document.querySelector("#calculateButton");
+    calculateButton.addEventListener("click", (event) => {
         event.preventDefault();
+        calculateAndDisplayBill();
+    });
+
+    // Add event listener for MCB Ampere change
+    mcbAmphereInput.addEventListener("change", () => {
+        // Trigger calculation when MCB Ampere is changed
+        calculateAndDisplayBill();
+    });
+
+    mcbAmphereInput2.addEventListener("change", () => {
+        // Trigger calculation when MCB Ampere is changed
         calculateAndDisplayBill();
     });
 });
@@ -148,5 +219,5 @@ function determineCharge(rateArray, consumption) {
     if (consumption <= 150) return rateArray[3];
     if (consumption <= 250) return rateArray[4];
     if (consumption <= 400) return rateArray[5];
-    return rateArray[6]; // Above 400    
+    return rateArray[6]; // Above 400
 }

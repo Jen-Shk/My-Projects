@@ -11,30 +11,57 @@
         <h2>Electricity Bill Calculator</h2>
         <form id="electricityForm">
             <div class="form-group">
-                <label for="mcb-Amphere">Enter the MCB Amphere</label>
-                    <div>
-                        <select name="mcbAmphere" id="mcb-Amphere">
-                            <option value="5" selected>5</option>
-                            <option value="15">15</option>
-                            <option value="30">30</option>
-                            <option value="60">60</option>
-                        </select>
-                    </div>
+                <label for="calculationMethod">Choose the method you prefer:</label>
+                <select name="calculationMethod" id="calculationMethod">
+                    <option value="" disabled selected>Select a method</option>
+                    <option value="meterReading">Meter Reading</option>
+                    <option value="directValue">Direct Value</option>
+                </select>
             </div>
 
-            <div class="form-group">
-                <label for="meterReading">Current Meter Reading:</label>
-                <input type="number" id="meterReading" name="meterReading" required>
-                <span id="meterReadingError" class="error"></span>
+            <div id="meterReadingInputs" class="method-inputs" style="display: none;">
+                <div class="form-group">
+                    <label for="mcb-Amphere">Enter the MCB Amphere:</label>
+                    <select name="mcbAmphere" id="mcb-Amphere">
+                        <option value="5">5</option>
+                        <option value="15">15</option>
+                        <option value="30">30</option>
+                        <option value="60">60</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="meterReading">Current Meter Reading:</label>
+                    <input type="number" id="meterReading" name="meterReading" required>
+                    <span id="meterReadingError" class="error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="previousReading">Previous Meter Reading:</label>
+                    <input type="number" id="previousReading" name="previousReading" required>
+                    <span id="previousReadingError" class="error"></span>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="previousReading">Previous Meter Reading:</label>
-                <input type="number" id="previousReading" name="previousReading" required>
-                <span id="previousReadingError" class="error"></span>
+            <div id="directValueInputs" class="method-inputs" style="display: none;">
+                <div class="form-group">
+                    <label for="mcb-Amphere">Enter the MCB Amphere:</label>
+                    <select name="mcbAmphereDirect" id="mcb-AmphereDirect">
+                        <option value="5">5</option>
+                        <option value="15">15</option>
+                        <option value="30">30</option>
+                        <option value="60">60</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="directValue">Enter the Direct Value:</label>
+                    <input type="number" id="directValue" name="directValue" required>
+                    <span id="directValueError" class="error"></span>
+                </div>
             </div>
 
-            <button type="submit">Calculate Bill</button>
+            <button id="calculateButton">Calculate Bill</button>
         </form>
         
         <div class="result">
