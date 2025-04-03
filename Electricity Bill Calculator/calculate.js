@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const electricityForm = document.querySelector("#electricityForm");
     const calculationMethodInput = document.querySelector("#calculationMethod");
     const meterReadingInputs = document.querySelector("#meterReadingInputs");
     const directValueInputs = document.querySelector("#directValueInputs");
