@@ -27,11 +27,6 @@ h2 {
     cursor: pointer;
 }
 
-/* Change appearance when focused */
-#mcb-Amphere:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(255, 87, 51, 0.5);
-}
 
 .form-group {
     margin-bottom: 15px;
